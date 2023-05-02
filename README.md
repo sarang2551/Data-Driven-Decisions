@@ -120,7 +120,55 @@ The $\textit{makeGraph}$ function converts the 40 dimensional matrix into a grap
 
 ![Graph to illustrate the minimum cost for the shortest path in a 5 by 5 matrix](minACPP_graph.png)
 
+
+
 [Performance comparison for Experiment 1](#Performance_exp1)
+
+A 1000 entries for out of sample data is generated using the method described above. This data is then ran through the two optimised models, MSE optimized and Cost optimized, which the MSE and Cost metrics for optimization respectively. What we're interested in is the downstream issue of cost hence the model that is able to minimize cost would be considered to be the better model. 
+
+```python
+def MSS_Performance_Check(data,ML_MODEL,doPrint=False):
+    is_x,is_c = data['in_sample_x'],data['in_sample_y']
+    ofs_x, ofs_c = data['out_sample_x'], data['out_sample_y']
+    # optimize using Mean squared Error as metric to get MSE optimized model
+    mss_best_model = get_best_model_alpha(c=is_c,x=is_x,ML_MODEL=ML_MODEL)
+    actual_costs = true_costs = differences = [] # initialse vectors used for graphing later
+    for idx in range(len(ofs_x)):
+        x_vec = np.array(ofs_x[idx]).reshape(5,1)
+        cost_vec = np.array(ofs_c[idx]).reshape(1,40)
+        beta = mss_best_model.coef_
+        y_pred = np.dot(beta,x_vec) # predicted vector using MSS optimized model
+
+        path = get_shortest_path(make_graph(y_pred))
+        binaryVec = np.array(makeBinaryVector(path)).reshape(40,1)
+        actualCost = cost_vec@binaryVec # calculated cost using MSE Optimized Model
+
+        optimal_path = get_shortest_path(make_graph(cost_vec.reshape(40,1))) # true optimum cost using vector from out of sample data
+        optimal_binary_path = makeBinaryVector(optimal_path)
+        true_cost = cost_vec@np.array(optimal_binary_path).reshape(40,1) # actual optimal cost (actual_cost*optimalPath)
+        if actualCost < true_cost: # This shouldn't be happening
+            return Exception(f"Actual cost lower than optimal cost using MSE: AC {actual_cost}, OC: {true_cost}")
+        # populate perfomance gauging vectors
+        actual_costs.append(float(actualCost))
+        true_costs.append(float(true_cost))
+        differences.append(abs(actualCost-true_cost))
+    actual_costs, differences = np.array(actual_costs), np.array(differences)
+    if doPrint: # print out the different metrics to gauge performance
+        print("Metric: Mean Squared Error")
+        print(f"Mean actual_pred_cost stage 1: {round(np.mean(actual_costs),2)}")
+        print(f"Mean standard deviation 1: {round(np.std(actual_costs),2)}")
+        print(f"Median stage 1: {round(np.median(actual_costs),2)}")
+        print(f"Mean difference stage 1: {round(np.mean(differences),2)}")   
+    return actual_costs
+```
+
+The code above utilises in-sample data to train and retrieve a MSE optimized model. The main for loop iterated through all out of sample feature vectors and produces a $\textit{ypred}$ predicted vector, which in return is used to produce a predicted shortest path subsequently leading to cost being calculated and saved in the $\textit{actualCost}$ variable. Apart from the mean actualCost other performance metrics are also calculated such as the difference between the actualCost and the true optimum cost and the median actualCost. There is also an if condition in the for loop that checks whether actualCost < true_cost, this condition should never be true as the true_cost should be the minimum possible cost for any cost vector.
+
+Now we run the out of sample data on a Cost Optimized model using a similar approach:
+
+```python
+
+```
 
 
 [References](#References)
