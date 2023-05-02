@@ -120,6 +120,8 @@ The $\textit{makeGraph}$ function converts the 40 dimensional matrix into a grap
 
 ![Graph to illustrate the minimum cost for the shortest path in a 5 by 5 matrix](minACPP_graph.png)
 
+[Performance comparison for Experiment 1](#Performance_exp1)
+
 
 [References](#References)
 
