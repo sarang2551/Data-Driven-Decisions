@@ -206,6 +206,9 @@ def Cost_Performance_Check(data,ML_MODEL,doPrint=False):
 
 Data is generated using 3 parameters n,d and e where n is the number of entries, d is the degree of the data (1 for linear models) and e is the noice introduced. 
 
+| N=100           | N=1000            |N=2500                |
+| -------------------| -------------------|------------------|
+|![]()|![]()|![]()|
 [References](#References)
 
 [Adam N. Elmachtoub, Paul Grigas (2021) Smart “Predict, then Optimize”. Management Science](https://doi.org/10.1287/mnsc.2020.3922)
