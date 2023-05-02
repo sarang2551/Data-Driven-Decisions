@@ -211,8 +211,10 @@ Data is generated using 3 parameters n,d and e where n is the number of entries,
 |![Histogram for n=100 comparison](Hist100.png)|![Histogram for n=1000 comparison](Hist1000.png)|
 |![Lineplot comparing costs for n = 100, y=x in orange](Line100.png)|![Lineplot comparing costs for n = 1000, y=x in orange](Line1000.png)|
 
-|N = 5000          |
+|N = 2500          |
 |------------------|
+|![Lineplot comparing costs for n = 2500, y=x in orange](Line2500.png)|
+
 
 As seen from the graphs, as n increases the results tend between the MSE metric and the Cost metric converge. Hence, the performance of the cost metric is better for small values of n.
 
