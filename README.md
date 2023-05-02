@@ -127,7 +127,7 @@ The $\textit{makeGraph}$ function converts the 40 dimensional matrix into a grap
 A 1000 entries for out of sample data is generated using the method described above. This data is then ran through the two optimised models, MSE optimized and Cost optimized, which the MSE and Cost metrics for optimization respectively. What we're interested in is the downstream issue of cost hence the model that is able to minimize cost would be considered to be the better model. 
 
 ```python
-def MSS_Performance_Check(data,ML_MODEL,doPrint=False):
+def MSE_Performance_Check(data,ML_MODEL,doPrint=False):
     is_x,is_c = data['in_sample_x'],data['in_sample_y']
     ofs_x, ofs_c = data['out_sample_x'], data['out_sample_y']
     # optimize using Mean squared Error as metric to get MSE optimized model
@@ -167,9 +167,44 @@ The code above utilises in-sample data to train and retrieve a MSE optimized mod
 Now we run the out of sample data on a Cost Optimized model using a similar approach:
 
 ```python
+def Cost_Performance_Check(data,ML_MODEL,doPrint=False):
+    X,y = data['in_sample_x'],data['in_sample_y']
+    ofs_x, ofs_c = data['out_sample_x'], data['out_sample_y']
+    # optimize model using ACPP cost as the metric
+    best_model = downwards_optimisation(X,y,ML_MODEL)
+    beta = best_model.coef_
+    costs = []
+    optimal_cost = []
+    differences = []
+    for idx in range(len(ofs_x)):
+        actual_cost = np.array(ofs_c[idx]).reshape(1,40)
+        x_vec = np.array(ofs_x[idx]).reshape(5,1)
+        y_pred = np.dot(beta,x_vec)
 
+        predicted_path = get_shortest_path(make_graph(y_pred))
+        binary_path = np.array(makeBinaryVector(predicted_path)).reshape(40,1)
+
+        optimal_path = get_shortest_path(make_graph(actual_cost.reshape(40,1)))
+        optimal_binary_path = np.array(makeBinaryVector(optimal_path)).reshape(40,1)
+
+        actualCost = float(actual_cost@binary_path)
+        optimalCost = float(actual_cost@optimal_binary_path)
+        if actualCost < optimalCost:
+            print(f"Error in step 2!")
+            return Exception(f"Actual Cost lower than optimised cost using ACPP: AC {actualCost} , OC {optimalCost}")
+        costs.append(actualCost)
+        optimal_cost.append(optimalCost)
+        differences.append(actualCost-optimalCost)
+    if doPrint:
+        print("Metric: AC*PP - AC*OP")
+        print(f"Mean actual_pred_cost stage 2: {round(np.mean(costs),2)}")
+        print(f"Mean standard deviation stage 2: {round(np.std(costs),2)}")
+        print(f"Median stage 2: {round(np.median(costs),2)}")
+        print(f"Mean difference stage 2: {round(np.mean(differences),2)}") 
+    return costs
 ```
 
+Data is generated using 3 parameters n,d and e where n is the number of entries, d is the degree of the data (1 for linear models) and e is the noice introduced. 
 
 [References](#References)
 
