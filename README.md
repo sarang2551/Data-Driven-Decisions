@@ -105,8 +105,8 @@ def downwards_optimisation(X,y,ML_MODEL):
         actual_cost = 0 # for a particular alpha val what is the predicted cost 
         for idx in range(len(y_pred)): # for every 40 dimensional vector
             predictedVec = np.array(y_pred[idx]).reshape(40,1)
-            g = make_graph(predictedVec)
-            shortestPredictedPath = np.array(makeBinaryVector(get_shortest_path(g))).reshape(40,1)
+            g = makeGraph(predictedVec)
+            shortestPredictedPath = np.array(makeBinaryVector(getShortestPath(g))).reshape(40,1)
             # calculate actual cost * shortest predicted path
             actual_cost += y_test[idx]@shortestPredictedPath
         if actual_cost < min_cost:
@@ -116,7 +116,7 @@ def downwards_optimisation(X,y,ML_MODEL):
     return best_model
 ```
 
-The $\textit{make\_graph}$ function converts the 40 dimensional matrix into a graph where the edges c[0], c[1], c[2] ... c[39] are edges connecting the 25 vertices. The $\textit{get\_shortest\_path}$ function utilises Dijkstra's algorithm to find the shortest path in the graph which the $\textit{makeBinaryVector}$ function uses to create a vector with 0s and 1s representing which edge is traversed in the shortest path. Finally, to calculate cost the cost vector and the binary vector are multiplied together. 
+The $\textit{makeGraph}$ function converts the 40 dimensional matrix into a graph where the edges c[0], c[1], c[2] ... c[39] are edges connecting the 25 vertices. The $\textit{getShortestPath}$ function utilises Dijkstra's algorithm to find the shortest path in the graph which the $\textit{makeBinaryVector}$ function uses to create a vector with 0s and 1s representing which edge is traversed in the shortest path. Finally, to calculate cost the cost vector and the binary vector are multiplied together. 
 
 ![Graph to illustrate the minimum cost for the shortest path in a 5 by 5 matrix](minACPP_graph.png)
 
