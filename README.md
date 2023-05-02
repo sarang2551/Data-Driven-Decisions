@@ -208,7 +208,7 @@ Data is generated using 3 parameters n,d and e where n is the number of entries,
 
 | N=100           | N=1000            |
 | -------------------| -------------------|
-|![Histogram for n=100 comparison](Histogram n =100, ACPP & MSS.png)|![Histogram for n=1000 comparison](Histogram n =1000, noise = 0.5, ACPP & MSS.png)|
+|![Histogram for n=100 comparison](Hist100.png)|![Histogram for n=1000 comparison](Hist1000.png)|
 
 
 [References](#References)
