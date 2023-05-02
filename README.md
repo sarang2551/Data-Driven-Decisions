@@ -14,8 +14,9 @@ In contrast, this project explores the "Smart, Predict, then Optimize" framework
 
 In this project report, the perfomance of this approach in being quantitatively explored.  
 
-[Experiment 1](#experiment1)
-[Data generation](#data_generation)
+## Experiment 1
+
+### Data generation
 
 This particular implementation of synthetic data generation is taken from the Elmachtoub-Grigas paper.
  
@@ -51,7 +52,7 @@ The vector x that represents features is in $\mathbb{R}^p$ while the cost vector
 
 This function is used to generate both in-sample training data as well as out-of-sample test data.  
 
-[Mean Squared Error Metric](#mss_metric)
+### Mean Squared Error Metric
 
 The first section of experiment one focuses on the standard approach to machine learning models which is to "Predict then optimize". Data is generated and then split for training and testing purposes. A Lasso model is trained on the synthetic data and a namptha value is determined using Mean Square Error (MSE) as the metric. Basically finding the optimum namptha value ,$\lambda^*$, such that the Lasso model $\hat{\beta}^{lasso} = \underset{\beta}{argmin}\left\lbrace\frac{1}{2n}||\mathbf{y}-\mathbf{X}\beta||_2^2 + \lambda ||\beta||_1 \right\rbrace$ results in the lowest MSE. 
 
@@ -80,7 +81,7 @@ def get_best_model_alpha():
 
 The minimum point on the graph above represents the optimal model with $\lambda^*$ as its parameter. 
 
-[Downstream decision](#downstream_decision_exp1)
+### Downstream decision using Cost Metric
 
 For this experiment we will be looking at the shortest path as a potential downstream decision, more explictly the cost associated to the shortest path, given a $5\times 5$ matrix with 40 edges. Each $i^\text{th}$ entry, c[i], in the cost vector will represent the cost associated to traversing that edge. 
 
@@ -122,7 +123,7 @@ The $\textit{makeGraph}$ function converts the 40 dimensional matrix into a grap
 
 
 
-[Performance comparison for Experiment 1](#Performance_exp1)
+### Performance comparison for Experiment 1
 
 A 1000 entries for out of sample data is generated using the method described above. This data is then ran through the two optimised models, MSE optimized and Cost optimized, which the MSE and Cost metrics for optimization respectively. What we're interested in is the downstream issue of cost hence the model that is able to minimize cost would be considered to be the better model. 
 
@@ -216,11 +217,11 @@ Data is generated using 3 parameters n,d and e where n is the number of entries,
 |![Lineplot comparing costs for n = 2500, y=x in orange](Line2500.png)|
 
 
-[Conclusion](#Conclusion)
+## Conclusion
 
 As seen from the graphs, as n increases the results tend between the MSE metric and the Cost metric converge. Hence, the performance of the cost metric is better for small values of n.
 
-[References](#References)
+## References
 
 [Adam N. Elmachtoub, Paul Grigas (2021) Smart “Predict, then Optimize”. Management Science](https://doi.org/10.1287/mnsc.2020.3922)
 
