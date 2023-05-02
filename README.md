@@ -209,7 +209,7 @@ Data is generated using 3 parameters n,d and e where n is the number of entries,
 | N=100           | N=1000            |
 | -------------------| -------------------|
 |![Histogram for n=100 comparison](Hist100.png)|![Histogram for n=1000 comparison](Hist1000.png)|
-
+|![Lineplot comparing costs for n = 100, y=x in orange](Line100.png)|![Lineplot comparing costs for n = 1000, y=x in orange](Line1000.png)|
 
 [References](#References)
 
