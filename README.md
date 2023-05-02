@@ -51,8 +51,9 @@ The vector x that represents features is in $\mathbb{R}^p$ while the cost vector
 
 This function is used to generate both in-sample training data as well as out-of-sample test data.  
 
-[Mean Squared Error metric](#mss_metric)
-The first section of experiment one focuses on the standard approach to machine learning models which is to "Predict then optimize". Data is generated and then split for training and testing purposes. A Lasso model is trained on the synthetic data and a namptha value is determined using Mean Square Error (MSE) as the metric. 
+[Mean Squared Error Metric](#mss_metric)
+
+The first section of experiment one focuses on the standard approach to machine learning models which is to "Predict then optimize". Data is generated and then split for training and testing purposes. A Lasso model is trained on the synthetic data and a namptha value is determined using Mean Square Error (MSE) as the metric. Basically finding the optimum namptha value ,$\lambda^*$, such that the Lasso model $\hat{\beta}^{lasso} = \underset{\beta}{argmin}\left\lbrace\frac{1}{2n}||\mathbf{y}-\mathbf{X}\beta||_2^2 + \lambda ||\beta||_1 \right\rbrace$ results in the lowest MSE. 
 
 Code for obtaining the best model with MSE metric: 
 ```python
@@ -75,8 +76,19 @@ def get_best_model_alpha():
     return best_model, error_vals, namptha_vals
 ```
 
+![Graph to illustrate the minimum error possible for different Lasso models utilising different namptha values](minMSS_graph.png)
+
+The minimum point on the graph above represents the optimal model with $\lambda^*$ as its parameter. 
 
 [Downstream decision](#downstream_decision_exp1)
+
+For this experiment we will be looking at the shortest path as a potential downstream decision, more explictly the cost associated to the shortest path, given a $5\times 5$ matrix with 40 edges. Each $i^\text{th}$ entry, c[i], in the cost vector will represent the cost associated to traversing that edge. 
+
+This is where there is a change in the metric for assessing models. Initially the MSE was used to obtain $\lambda^*$, now the metric would be the cost associated with traversing the shortest path in a $5\times 5$ matrix.
+
+![Graph to illustrate the minimum cost for the shortest path in a 5 by 5 matrix](minACPP_graph.png)
+
+
 [References](#References)
 [Adam N. Elmachtoub, Paul Grigas (2021) Smart “Predict, then Optimize”. Management Science](https://doi.org/10.1287/mnsc.2020.3922)
 [Data-Driven Conditional Robust Optimization](https://proceedings.neurips.cc/paper_files/paper/2022/file/3df874367ce2c43891aab1ab23ae6959-Paper-Conference.pdf)
