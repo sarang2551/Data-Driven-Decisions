@@ -52,10 +52,30 @@ The vector x that represents features is in $\mathbb{R}^p$ while the cost vector
 This function is used to generate both in-sample training data as well as out-of-sample test data.  
 
 [Mean Squared Error metric](#mss_metric)
-The first section of experiment one focuses on the standard approach to machine learning models which is to "Predict then optimize". Data is generated and then split for training and testing purposes. 
-```python
+The first section of experiment one focuses on the standard approach to machine learning models which is to "Predict then optimize". Data is generated and then split for training and testing purposes. A Lasso model is trained on the synthetic data and a namptha value is determined using Mean Square Error (MSE) as the metric. 
 
+Code for obtaining the best model with MSE metric: 
+```python
+def get_best_model_alpha():
+    x,c = make_data(1000)
+    xtrain, xtest, ytrain, ytest = train_test_split(x,c,test_size=0.25,random_state=100)
+    namptha_vals = np.arange(0.001,1,0.001)
+    error_vals = []
+    err_min = sys.maxsize
+    best_model = None
+    for alpha in namptha_vals:
+        model = Lasso(alpha=alpha)
+        model.fit(X=xtrain,y=ytrain)
+        ypred = model.predict(X=xtest) #n/4, 5
+        err = mean_squared_error(y_true=ytest,y_pred=ypred)
+        if err < err_min:
+            err_min = err
+            best_model = model
+        error_vals.append(err)
+    return best_model, error_vals, namptha_vals
 ```
+
+
 [Downstream decision](#downstream_decision_exp1)
 [References](#References)
 [Adam N. Elmachtoub, Paul Grigas (2021) Smart “Predict, then Optimize”. Management Science](https://doi.org/10.1287/mnsc.2020.3922)
