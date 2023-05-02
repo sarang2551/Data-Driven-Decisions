@@ -86,9 +86,42 @@ For this experiment we will be looking at the shortest path as a potential downs
 
 This is where there is a change in the metric for assessing models. Initially the MSE was used to obtain $\lambda^*$, now the metric would be the cost associated with traversing the shortest path in a $5\times 5$ matrix.
 
+```python
+def downwards_optimisation(X,y,ML_MODEL):
+    # take in x_train to train n models 
+    # use x_test, y_test to get beta_namptha values
+    # use those beta namptha values to generate predictions
+    # use predictions to make paths and then calculate cost associated with the shortest path
+    # use the cost to get namptha value that generates the lowest cost 
+    x_train, x_test, y_train, y_test = train_test_split(X,y,test_size=0.25,random_state=100)
+    namptha_vals = np.arange(0.005,0.5,0.005)
+    best_model = None
+    min_cost = sys.maxsize
+    costs_arr = []
+    for alpha in namptha_vals:
+        model = ML_MODEL(alpha=alpha)
+        model.fit(x_train,y_train)
+        y_pred = model.predict(x_test) # 2D vector with shape (0.25*n,40)
+        actual_cost = 0 # for a particular alpha val what is the predicted cost 
+        for idx in range(len(y_pred)): # for every 40 dimensional vector
+            predictedVec = np.array(y_pred[idx]).reshape(40,1)
+            g = make_graph(predictedVec)
+            shortestPredictedPath = np.array(makeBinaryVector(get_shortest_path(g))).reshape(40,1)
+            # calculate actual cost * shortest predicted path
+            actual_cost += y_test[idx]@shortestPredictedPath
+        if actual_cost < min_cost:
+            min_cost = actual_cost
+            best_model = model
+        costs_arr.append(actual_cost)
+    return best_model
+```
+
+The $\textit{make\_graph}$ function converts the 40 dimensional matrix into a graph where the edges c[0], c[1], c[2] ... c[39] are edges connecting the 25 vertices. The $\textit{get\_shortest\_path}$ function utilises Dijkstra's algorithm to find the shortest path in the graph which the $\textit{makeBinaryVector}$ function uses to create a vector with 0s and 1s representing which edge is traversed in the shortest path. Finally, to calculate cost the cost vector and the binary vector are multiplied together. 
+
 ![Graph to illustrate the minimum cost for the shortest path in a 5 by 5 matrix](minACPP_graph.png)
 
 
 [References](#References)
+
 [Adam N. Elmachtoub, Paul Grigas (2021) Smart “Predict, then Optimize”. Management Science](https://doi.org/10.1287/mnsc.2020.3922)
 [Data-Driven Conditional Robust Optimization](https://proceedings.neurips.cc/paper_files/paper/2022/file/3df874367ce2c43891aab1ab23ae6959-Paper-Conference.pdf)
