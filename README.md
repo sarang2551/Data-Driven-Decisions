@@ -47,11 +47,15 @@ def make_data(n, degree = 1,e = 0.5):
     return x,c
 ```
 
-The vector x that represents features is in $\mathbb{R}^p$ while the cost vector, c, is in $\mathbb{R}^d$. In the function above, p and d are hardcoded to be 5 and 40 respectively. The dimension for the cost vector, d, correponds to the number of edges in a 5 by 5 matrix, other dimensions can be used for a n by m matrix using the following formula: Edges = n * (m-1) + m * (n-1). First, a random matrix $\mathbb{B}^* \subseteq \mathbb{R}^{d \times p}$ is generated which encodes the parameters of the true model, where each entry, b, in $\mathbb{B}^*$ is $b \sim \text{Bernoulli}(0.5)$.
+The vector x that represents features is in $\mathbb{R}^p$ while the cost vector, c, is in $\mathbb{R}^d$. In the function above, p and d are hardcoded to be 5 and 40 respectively. The dimension for the cost vector, d, correponds to the number of edges in a 5 by 5 matrix, other dimensions can be used for a n by m matrix using the following formula: Edges = n * (m-1) + m * (n-1). First, a random matrix $\mathbb{B}^* \subseteq \mathbb{R}^{d \times p}$ is generated which encodes the parameters of the true model, where each entry, b, in $\mathbb{B}^*$ is $b \sim \text{Bernoulli}(0.5)$. After the $\mathbb{B}^*$ matrix the training data is generated with n entries in total. Each entry has a feature vector x and a cost vector.
+
 This function is used to generate both in-sample training data as well as out-of-sample test data.  
 
-
 [Mean Squared Error metric](#mss_metric)
+The first section of experiment one focuses on the standard approach to machine learning models which is to "Predict then optimize". Data is generated and then split for training and testing purposes. 
+```python
+
+```
 [Downstream decision](#downstream_decision_exp1)
 [References](#References)
 [Adam N. Elmachtoub, Paul Grigas (2021) Smart “Predict, then Optimize”. Management Science](https://doi.org/10.1287/mnsc.2020.3922)
