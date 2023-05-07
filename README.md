@@ -216,6 +216,11 @@ Data is generated using 3 parameters n,d and e where n is the number of entries,
 |------------------|
 |![Lineplot comparing costs for n = 2500, y=x in orange](Line2500.png)|
 
+The figure below compares the performance of the different metrics as the number of features change (p value when creatin synthetic data)
+
+![Perfomance with respect to change in features](features_performance.png)
+
+As seen from the figure, performance between the metrics remains almost the same regardless of the number of features
 
 ## Conclusion
 
