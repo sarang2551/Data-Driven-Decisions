@@ -1,4 +1,6 @@
+from collections.abc import Callable, Iterable, Mapping
 import heapq
+from typing import Any
 from scipy.stats import bernoulli
 import pandas as pd
 import numpy as np
@@ -6,14 +8,13 @@ import sys
 import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.metrics import mean_squared_error, make_scorer
-
-def make_data(n, degree = 1,e = 0.5):
+import concurrent.futures
+import threading
+def make_data(n, degree = 1,e = 0.5, d = 40, p = 5):
     b = bernoulli(0.5)
-    d = 40 # total number of edges in a 5 by 5 matrix
-    p = 5 # number of features
     # Construct a x feature vector
-    I_p = np.identity(5)
-    x = np.random.multivariate_normal(mean=np.array([0,0,0,0,0]),cov=I_p,size=(n))
+    I_p = np.identity(p)
+    x = np.random.multivariate_normal(mean=np.array([0]*p),cov=I_p,size=(n))
     for i in range(n):
         for j in range(p):
             x[i][j] = abs(x[i][j])
@@ -25,7 +26,7 @@ def make_data(n, degree = 1,e = 0.5):
     
     # Construct a cost vector with dimension d
     for i in range(n):
-        x_i = x[i].reshape(5,1)
+        x_i = x[i].reshape(p,1)
         for j in range(d):
             noise = np.random.uniform(low=1-e,high=1+e)
             frac = 1/np.sqrt(p)
@@ -241,7 +242,11 @@ def get_shortest_path(g:dict):
 	path = [target.get_id()]
 	shortest(target,path)
 	return path[::-1]
-
+    
+def run_concurrent_tasks(tasks,params):
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        futures = [executor.submit(t,*params) for t in tasks]
+        return (f.result() for f in futures)
 
 def makeHist(cost,title,labelX):
     sns.histplot(cost,bins=np.arange(20,80,2))
@@ -288,3 +293,36 @@ def MSE():
     return make_scorer(mean_squared_error, greater_is_better=False)
 def ACPP():
     return make_scorer(acpp_optimization,greater_is_better=False)
+
+def price_volume_correlation(x_data:pd.DataFrame,y_data:pd.DataFrame,num_assests,xname,aggregate=True):
+    # correlation of the X stock with all the y assests (averaged out?)
+    # returns a pd.Series object with shape (n,1)
+    volume_x = x_data['Volume']
+    temp_arr = np.zeros(shape=(len(x_data),num_assests))
+    for i in range(num_assests):
+        price_y = y_data[y_data.columns[i]]
+        for j in range(len(temp_arr)):
+            x_vec = volume_x[:j+1]
+            y_vec = price_y[:j+1]
+            correlation = y_vec.corr(x_vec)
+            temp_arr[j][i] = correlation if str(correlation) != "nan" else 0
+    if aggregate:
+        return pd.DataFrame(data=temp_arr.mean(axis=1),index=y_data.index,columns=[f'price_volume_correlation_{xname}'])
+    else:
+         return pd.DataFrame(data=temp_arr,index=y_data.index,columns=[f'price_volume_correlation_{xname}'])
+
+def return_volume_correlation(X:pd.DataFrame,y:pd.DataFrame,x_data,xname,num_assests,aggregate=True):
+    # correlation of the returns from stock y with the volume of stock x
+    volume_x = X['Volume']
+    temp_arr = np.zeros(shape=(len(x_data),num_assests))
+    for i in range(num_assests):
+        return_arr = y.iloc[:,i].pct_change().fillna(0)
+        for j in range(len(temp_arr)):
+              x_vec = volume_x[:j+1]
+              y_vec = return_arr[:j+1]
+              correlation = y_vec.corr(x_vec)
+              temp_arr[j][i] = correlation if str(correlation) != "nan" else 0
+    if aggregate:
+        return pd.DataFrame(data=temp_arr.mean(axis=1),index=y.index,columns=[f'return_volume_correlation_{xname}'])
+    else:
+         return pd.DataFrame(data=temp_arr,index=y.index,columns=[f'return_volume_correlation_{xname}'])
